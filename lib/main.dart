@@ -33,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   final TextEditingController _urlController = TextEditingController();
   String? _imageUrl;
   bool _isContextMenuVisible = false;
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // Handle image double click to toggle fullscreen
+  /// Handle image double click to toggle fullscreen
   void _onImageDoubleClick() {
     if (_isFullscreen) {
       html.document.exitFullscreen();
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // Close the context menu if clicked outside
+  /// Close the context menu if clicked outside
   void _closeContextMenu() {
     if (_isContextMenuVisible) {
       setState(() {
@@ -97,38 +98,41 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Opacity(
-                opacity: _isContextMenuVisible? 0.3 : 1,
+                opacity: _isContextMenuVisible? 0.3 : 1, /// handle opacity if the context menu is shown
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    if(_imageUrl != null)
+                    if(_imageUrl != null) /// display image only when the imageUrl is available
                       SizedBox(
                         height: GetSize.isDesktop(context) ? GetSize.height(context) * 0.5 : 200,
                         width: GetSize.isDesktop(context) ? GetSize.height(context) * 0.5 : 200,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: InkWell(
-                            onDoubleTap: _onImageDoubleClick,
-                            child: HtmlImageElementView(imageUrl: _imageUrl),
+                            onDoubleTap: _onImageDoubleClick, /// invoke double tap event on the image
+                            child: HtmlImageElementView(imageUrl: _imageUrl), /// call HtmlImageElementView to display the image
                           ),
                         ),
                       ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
+                        /// TextFormField to enter the image url
                         Expanded(
                           child: TextFormField(
                             controller: _urlController,
                             decoration: InputDecoration(
                               label: Text("Image URL")
                             ),
-                            keyboardType: TextInputType.url,
+                            keyboardType: TextInputType.url, /// set keyboard type url
                             onFieldSubmitted: (val) {
+                              /// once submitted show the image
                               setState(() {
                                 _imageUrl = val;
                               });
                             },
                             onChanged: (val) {
+                              /// if the input is empty hide the image
                               if(val.isEmpty) {
                                 setState(() {
                                   _imageUrl = null;
@@ -138,7 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         const SizedBox(width: 5),
-                        ElevatedButton(onPressed: (){
+                        /// button to show the image
+                        ElevatedButton(onPressed: () {
+                          /// display image when the button is clicked
+                          /// check the condition if the url is not empty
                           if(_urlController.text.isNotEmpty) {
                             setState(() {
                               _imageUrl = _urlController.text;
@@ -154,8 +161,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+      /// floating action button
       floatingActionButton: Stack(
         children: [
+          /// if _isContextMenuVisible is true show enter fullscreen and exit fullscreen button
           if(_isContextMenuVisible)
             Positioned(
               bottom: 80.0,
@@ -182,6 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }, child: Text("Enter Fullscreen", style: TextStyle(color: Colors.white))),
             ),
           ),
+          /// once the + button is clicked disable the floating button and enable enter and exit fullscreen button.
           if(!_isContextMenuVisible)
             Positioned(
             bottom: 20.0,
